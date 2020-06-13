@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = "About";
+}
+<h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+
+<p>Use this area to provide additional information.</p>
+
+
+<form method="post">
+    <fieldset>
+        <div>
+            <label for="address">Address:</label>
+            <input style="width: 300px" type="text" name="address" value="@Request["address"]" />
+            <input type="submit" value="Map it!" />
+        </div>
+    </fieldset>
+</form>
+
+@if (IsPost)
+{
+    <p>IsPost is trueeee</p>
+
+
+<div>
+    @Microsoft.Web.Helpers.Maps.GetBingHtml(
+        //location: Request.Form["address"],
+        longitude: "47.6781005859375",
+        latitude: "-122.158317565918",
+        key: "AkSnl5YK3-OsNqnoOe8_ejMiYYdSayM42eqWlREak4aBvwCQ0ab1saN4ioNGla8c",
+        width: "400",
+        height: "400"
+    )
+</div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
