@@ -14,18 +14,6 @@ namespace Tournamental.Models
 
     public class ParticipantMetadata
     {
-        [Display(Name = "Participant id")]
-        [Required]
-        public int Id { get; set; }
-
-        [Display(Name = "Tournament ID")]
-        [Required]
-        public int Tournament { get; set; }
-
-        [Display(Name = "User ID")]
-        [Required]
-        public int User { get; set; }
-
         [Display(Name = "User's Licence ID")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Licence ID cannot be null")]
         public string LicenceNumber { get; set; }

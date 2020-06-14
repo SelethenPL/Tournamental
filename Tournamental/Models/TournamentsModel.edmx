@@ -5,6 +5,17 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="TournamentsModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Match">
+          <Key>
+            <PropertyRef Name="tournamentid" />
+          </Key>
+          <Property Name="tournamentid" Type="int" Nullable="false" />
+          <Property Name="teamid1" Type="int" Nullable="false" />
+          <Property Name="teamid2" Type="int" Nullable="false" />
+          <Property Name="roundnumber" Type="int" Nullable="false" />
+          <Property Name="winner" Type="int" Nullable="false" />
+          <Property Name="id" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="Participant">
           <Key>
             <PropertyRef Name="Id" />
@@ -45,7 +56,7 @@
           <Property Name="VerificationSendTime" Type="datetime" Nullable="false" />
           <Property Name="ResetPasswordCode" Type="nvarchar" MaxLength="50" />
         </EntityType>
-        <Association Name="FK__Participa__Tourn__4BAC3F29">
+        <Association Name="FK__Participa__Tourn__5EBF139D">
           <End Role="Tournament" Type="Self.Tournament" Multiplicity="1" />
           <End Role="Participant" Type="Self.Participant" Multiplicity="*" />
           <ReferentialConstraint>
@@ -57,7 +68,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Participan__User__4CA06362">
+        <Association Name="FK__Participan__User__5FB337D6">
           <End Role="User" Type="Self.User" Multiplicity="1" />
           <End Role="Participant" Type="Self.Participant" Multiplicity="*" />
           <ReferentialConstraint>
@@ -70,14 +81,15 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="TournamentsModelStoreContainer">
+          <EntitySet Name="Match" EntityType="Self.Match" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Participant" EntityType="Self.Participant" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tournament" EntityType="Self.Tournament" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__Participa__Tourn__4BAC3F29" Association="Self.FK__Participa__Tourn__4BAC3F29">
+          <AssociationSet Name="FK__Participa__Tourn__5EBF139D" Association="Self.FK__Participa__Tourn__5EBF139D">
             <End Role="Tournament" EntitySet="Tournament" />
             <End Role="Participant" EntitySet="Participant" />
           </AssociationSet>
-          <AssociationSet Name="FK__Participan__User__4CA06362" Association="Self.FK__Participan__User__4CA06362">
+          <AssociationSet Name="FK__Participan__User__5FB337D6" Association="Self.FK__Participan__User__5FB337D6">
             <End Role="User" EntitySet="User" />
             <End Role="Participant" EntitySet="Participant" />
           </AssociationSet>
@@ -114,6 +126,7 @@
             <End Role="User" EntitySet="User" />
             <End Role="Participant" EntitySet="Participant" />
           </AssociationSet>
+          <EntitySet Name="Match" EntityType="TournamentsModel.Match" />
         </EntityContainer>
         <EntityType Name="Participant">
           <Key>
@@ -167,6 +180,17 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Match">
+          <Key>
+            <PropertyRef Name="tournamentid" />
+          </Key>
+          <Property Name="tournamentid" Type="Int32" Nullable="false" />
+          <Property Name="teamid1" Type="Int32" Nullable="false" />
+          <Property Name="teamid2" Type="Int32" Nullable="false" />
+          <Property Name="roundnumber" Type="Int32" Nullable="false" />
+          <Property Name="winner" Type="Int32" Nullable="false" />
+          <Property Name="id" Type="Int32" Nullable="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -213,6 +237,18 @@
                 <ScalarProperty Name="Discipline" ColumnName="Discipline" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Match">
+            <EntityTypeMapping TypeName="TournamentsModel.Match">
+              <MappingFragment StoreEntitySet="Match">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="winner" ColumnName="winner" />
+                <ScalarProperty Name="roundnumber" ColumnName="roundnumber" />
+                <ScalarProperty Name="teamid2" ColumnName="teamid2" />
+                <ScalarProperty Name="teamid1" ColumnName="teamid1" />
+                <ScalarProperty Name="tournamentid" ColumnName="tournamentid" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

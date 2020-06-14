@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using Tournamental.Models;
@@ -14,7 +15,6 @@ namespace Tournamental.Controllers
             return View();
         }
 
-        [Authorize]
         [HttpGet]
         public ActionResult Contact()
         {

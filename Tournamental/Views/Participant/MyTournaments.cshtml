@@ -1,0 +1,55 @@
+﻿@model IEnumerable<Tournamental.Models.Participant>
+
+@{
+    ViewBag.Title = "My Tournaments";
+}
+
+<h2>List of my tournaments!</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Tournament1.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Tournament1.Discipline)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Tournament1.Time)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Tournament1.Location)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LicenceNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CurrentRanking)
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tournament1.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tournament1.Discipline)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tournament1.Time)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tournament1.Location)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LicenceNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CurrentRanking)
+            </td>
+        </tr>
+    }
+
+</table>

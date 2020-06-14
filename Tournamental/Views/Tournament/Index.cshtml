@@ -47,6 +47,7 @@
                 @Html.DisplayFor(modelItem => item.Discipline)
             </td>
             <td>
+                @Html.ActionLink("Sign on to participate", "Create", "Participant", new { tournamentID = item.Id }, null) |
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
                 @Html.ActionLink("Details", "Details", new { id = item.Id })
             </td>

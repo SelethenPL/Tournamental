@@ -1,0 +1,19 @@
+﻿@model Tournamental.Models.Match
+
+@{
+    ViewBag.Title = "Ladder";
+}
+
+<h2>View</h2>
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-danger">
+        <strong>@ViewBag.Message</strong>
+    </div>
+}
+
+
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>

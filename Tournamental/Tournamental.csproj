@@ -144,16 +144,21 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ParticipantController.cs" />
     <Compile Include="Controllers\TournamentController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Cryptography.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Extended\Match.cs" />
     <Compile Include="Models\Extended\Participant.cs" />
     <Compile Include="Models\Extended\Tournament.cs" />
     <Compile Include="Models\Extended\User.cs" />
     <Compile Include="Models\City.cs" />
+    <Compile Include="Models\Match.cs">
+      <DependentUpon>TournamentsModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Participant.cs">
       <DependentUpon>TournamentsModel.tt</DependentUpon>
     </Compile>
@@ -245,10 +250,15 @@
     <Content Include="Views\User\ForgotPassword.cshtml" />
     <Content Include="Views\User\ResetPassword.cshtml" />
     <Content Include="Views\Tournament\Create.cshtml" />
-    <Content Include="Views\Tournament\Delete.cshtml" />
     <Content Include="Views\Tournament\Details.cshtml" />
     <Content Include="Views\Tournament\Edit.cshtml" />
     <Content Include="Views\Tournament\Index.cshtml" />
+    <Content Include="Views\Participant\Create.cshtml" />
+    <Content Include="Views\Participant\Details.cshtml" />
+    <Content Include="Views\Participant\Index.cshtml" />
+    <Content Include="Views\Participant\MyTournaments.cshtml" />
+    <Content Include="Views\Home\Match.cshtml" />
+    <Content Include="Views\Tournament\Ladder.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

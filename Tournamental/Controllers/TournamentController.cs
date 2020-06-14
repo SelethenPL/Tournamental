@@ -5,8 +5,11 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Security.Principal;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Services.Description;
+using System.Web.UI.WebControls.WebParts;
 using Microsoft.Ajax.Utilities;
 using PagedList;
 using Tournamental.Models;
@@ -150,6 +153,31 @@ namespace Tournamental.Controllers
         {
             if (ModelState.IsValid)
             {
+                #region date comparison
+                if (DateTime.Compare(tournament.Time, tournament.ApplicationDeadline) < 0)
+                {
+                    ViewBag.Message = "Deadline can't be after start date!";
+                    return View(tournament);
+                }
+                #endregion
+
+                #region date after today 
+                if (DateTime.Compare(tournament.Time, DateTime.Now.Date) < 0)
+                {
+                    ViewBag.Message = "Date can't be in the past";
+                    return View(tournament);
+                }
+                #endregion
+
+                #region player numbers comparison
+                if (tournament.RankedPlayers > tournament.MaxParticipant)
+                {
+                    ViewBag.Message = "Number of participant must be at least as big as ranked players." +
+                                "(Max number of participants >= Number of ranked players)";
+                    return View(tournament);
+                }
+                #endregion
+
                 db.Entry(tournament).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -157,28 +185,56 @@ namespace Tournamental.Controllers
             return View(tournament);
         }
 
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Tournament tournament = db.Tournament.Find(id);
-            if (tournament == null)
-            {
-                return HttpNotFound();
-            }
-            return View(tournament);
-        }
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult Ladder(int id)
         {
-            Tournament tournament = db.Tournament.Find(id);
-            db.Tournament.Remove(tournament);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            var participant = db.Participant.Where(p => p.Tournament == id);
+
+            var matches = db.Match.Where(m => m.tournamentid == id);
+
+            if (participant != null && matches == null)
+            {
+                var participantList = participant.ToList();
+                int n = participant.Count();
+                var deadline = participantList[0].Tournament1.ApplicationDeadline;
+                if (DateTime.Compare(deadline, DateTime.Now.Date) < 0)
+                {
+                    for (int i = 0; i < n; i += 2)
+                    {
+                        Match m;
+                        if (i == n - 1 && n % 2 == 1)
+                        { // Empty match (like wildcard)
+                            m = new Match(
+                                id, // tournamentID
+                                participantList[i].Id, // team1
+                                -1, // team2 (empty)
+                                1, // round
+                                -1 // winner
+                                );
+                        }
+                        else
+                        {
+                            m = new Match(
+                                id, // tournamentID
+                                participantList[i].Id, // team1
+                                participantList[i + 1].Id, // team2
+                                1, // round
+                                -1 // winner
+                                );
+                        }
+                        db.Match.Add(m);
+                        db.SaveChanges();
+                    }
+                }
+                else
+                {
+                    ViewBag.Message = "You need to wait for application deadline!";
+                }
+            }
+
+            var matchesList = db.Match.Where(m => m.tournamentid == id);
+
+            return View(matchesList.ToList());
         }
 
         protected override void Dispose(bool disposing)

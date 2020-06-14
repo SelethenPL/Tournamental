@@ -28,5 +28,6 @@ namespace Tournamental.Models
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<Participant> Participant { get; set; }
         public virtual DbSet<Tournament> Tournament { get; set; }
+        public virtual DbSet<Match> Match { get; set; }
     }
 }

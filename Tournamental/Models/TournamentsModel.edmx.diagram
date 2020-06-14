@@ -10,6 +10,7 @@
         <EntityTypeShape EntityType="TournamentsModel.Tournament" Width="1.5" PointX="2.625" PointY="2" />
         <AssociationConnector Association="TournamentsModel.FK__Participa__Tourn__4BAC3F29" />
         <AssociationConnector Association="TournamentsModel.FK__Participan__User__4CA06362" />
+        <EntityTypeShape EntityType="TournamentsModel.Match" Width="1.5" PointX="5.375" PointY="4.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
