@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'F:\_Studia\6sem\Advanced-Internet-Applications\Tournamental\Tournamental\Models\TournamentsModel.edmx'. 
+﻿// T4 code generation is enabled for model 'F:\_Studia\6sem\Tournamental\Tournamental\Models\TournamentsModel.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

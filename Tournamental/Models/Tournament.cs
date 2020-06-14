@@ -12,24 +12,24 @@ namespace Tournamental.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class User
+    public partial class Tournament
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public User()
+        public Tournament()
         {
             this.Participant = new HashSet<Participant>();
         }
     
-        public int UserID { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string EmailID { get; set; }
-        public Nullable<System.DateTime> DateOfBirth { get; set; }
-        public string Password { get; set; }
-        public bool IsEmailVerified { get; set; }
-        public System.Guid ActivationCode { get; set; }
-        public System.DateTime VerificationSendTime { get; set; }
-        public string ResetPasswordCode { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Discipline { get; set; }
+        public int Organizer { get; set; }
+        public System.DateTime Time { get; set; }
+        public string Location { get; set; }
+        public int MaxParticipant { get; set; }
+        public System.DateTime ApplicationDeadline { get; set; }
+        public string SponsorLogo { get; set; }
+        public int RankedPlayers { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Participant> Participant { get; set; }

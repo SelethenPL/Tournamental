@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Security;
 using Tournamental.Models;
@@ -13,6 +14,8 @@ namespace Tournamental.Controllers
 {
     public class UserController : Controller
     {
+        private TournamentsEntities db = new TournamentsEntities();
+
         [HttpGet]
         public ActionResult Registration()
         {
@@ -49,16 +52,15 @@ namespace Tournamental.Controllers
 
                 user.IsEmailVerified = false;
                 #region Save to db
-                using (TournamentsEntities dc = new TournamentsEntities())
-                {
-                    user.VerificationSendTime = DateTime.Now;
-                    dc.User.Add(user);
-                    dc.SaveChanges();
+                
+                user.VerificationSendTime = DateTime.Now;
+                db.User.Add(user);
+                db.SaveChanges();
 
-                    SendEmailVerificationLink(user.EmailID, user.ActivationCode.ToString());
-                    message = "Registration successful. Account activation link has been sent.";
-                    status = true;
-                }
+                SendEmailVerificationLink(user.EmailID, user.ActivationCode.ToString());
+                message = "Registration successful. Account activation link has been sent.";
+                status = true;
+                
                 #endregion
             }
             else
@@ -74,29 +76,27 @@ namespace Tournamental.Controllers
         public ActionResult VerifyAccount(string id)
         {
             bool status = false;
-            using (TournamentsEntities dc = new TournamentsEntities())
-            {
-                // To avoid confirm password not match issue
-                dc.Configuration.ValidateOnSaveEnabled = false;
-                var v = dc.User.Where(s => s.ActivationCode == new Guid(id)).FirstOrDefault();
+
+            // To avoid confirm password not match issue
+            db.Configuration.ValidateOnSaveEnabled = false;
+            var v = db.User.Where(s => s.ActivationCode == new Guid(id)).FirstOrDefault();
                 
-                if (v != null)
+            if (v != null)
+            {
+                if (DateTime.Now <= v.VerificationSendTime.AddHours(24.0))
                 {
-                    if (DateTime.Now <= v.VerificationSendTime.AddHours(24.0))
-                    {
-                        v.IsEmailVerified = true;
-                        dc.SaveChanges();
-                        status = true;
-                    } 
-                    else
-                    {
-                        ViewBag.Message = "Link expired, try again";
-                    }
-                }
+                    v.IsEmailVerified = true;
+                    db.SaveChanges();
+                    status = true;
+                } 
                 else
                 {
-                    ViewBag.Message = "Invalid request";
+                    ViewBag.Message = "Link expired, try again";
                 }
+            }
+            else
+            {
+                ViewBag.Message = "Invalid request";
             }
             ViewBag.Status = status;
             return View();
@@ -112,43 +112,42 @@ namespace Tournamental.Controllers
         public ActionResult Login(UserLogin login, string returnUrl="")
         {
             string message;
-            using (TournamentsEntities dc = new TournamentsEntities())
+            
+            var v = db.User.Where(s => s.EmailID == login.EmailID).FirstOrDefault();
+            if (v != null)
             {
-                var v = dc.User.Where(s => s.EmailID == login.EmailID).FirstOrDefault();
-                if (v != null)
+                if (string.Compare(Cryptography.Hash(login.Password), v.Password) == 0)
                 {
-                    if (string.Compare(Cryptography.Hash(login.Password), v.Password) == 0)
+                    int timeout = login.RememberMe ? 420 : 20;
+                    var ticket = new FormsAuthenticationTicket(login.EmailID, login.RememberMe, timeout);
+                    string encrypt = FormsAuthentication.Encrypt(ticket);
+                    var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, encrypt)
                     {
-                        int timeout = login.RememberMe ? 420 : 20;
-                        var ticket = new FormsAuthenticationTicket(login.EmailID, login.RememberMe, timeout);
-                        string encrypt = FormsAuthentication.Encrypt(ticket);
-                        var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, encrypt)
-                        {
-                            Expires = DateTime.Now.AddMinutes(timeout),
-                            HttpOnly = true
-                        };
+                        Expires = DateTime.Now.AddMinutes(timeout),
+                        HttpOnly = true
+                    };
 
-                        Response.Cookies.Add(cookie);
+                    Response.Cookies.Add(cookie);
 
-                        if (Url.IsLocalUrl(returnUrl))
-                        {
-                            return Redirect(returnUrl);
-                        }
-                        else
-                        {
-                            return RedirectToAction("Index", "Home");
-                        }
-                     } 
+                    if (Url.IsLocalUrl(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
                     else
                     {
-                        message = "Invalid credential";
+                        return RedirectToAction("Index", "Home");
                     }
-                }
+                } 
                 else
                 {
-                    message = "Invalid credentials!";
+                    message = "Invalid credential";
                 }
             }
+            else
+            {
+                message = "Invalid credentials!";
+            }
+        
             ViewBag.Message = message;
             return View();
         }
@@ -165,27 +164,39 @@ namespace Tournamental.Controllers
         [NonAction]
         public bool IsEmailExisting(string emailID)
         {
-            using (TournamentsEntities dc = new TournamentsEntities())
-            {
-                var v = dc.User.Where(s => s.EmailID == emailID).FirstOrDefault();
-                return v != null;
-            }
+            var v = db.User.Where(s => s.EmailID == emailID).FirstOrDefault();
+            return v != null;
         }
 
         [NonAction]
-        public void SendEmailVerificationLink(string emailID, string activationCode)
+        public void SendEmailVerificationLink(string emailID, string activationCode, string emailFor = "VerifyAccount")
         {
-            var verifyUrl = "/User/VerifyAccount/" + activationCode;
+            var verifyUrl = "/User/" + emailFor + "/" + activationCode;
             var link = Request.Url.AbsoluteUri.Replace(Request.Url.PathAndQuery, verifyUrl);
 
             var fromEmail = new MailAddress("tournamentalservice@gmail.com", "Tournaments Service");
             var toEmail = new MailAddress(emailID);
             var fromEmailPassword = "2mWRQCbJdcP2zrH";
-            string subject = "Your account in tournament service!";
 
-            string body = "<br/>Click link below to verify account at our tournament service."
-                + "<a href='" + link + "'>" + link + "</a>";
+            string subject = "";
+            string body = "";
 
+            if (emailFor == "VerifyAccount")
+            {
+                subject = "Password Reset for tournaments service";
+
+                body = "We got request for resetting your password.<br/>" 
+                    + "Click link below to proceed in resetting.<br/>"
+                    + "<a href='" + link + "'>" + link + "</a>";
+            }
+            else if (emailFor == "ResetPassword")
+            {
+                subject = "Your account in tournament service!";
+
+                body = "<br/>Click link below to verify account at our tournament service."
+                    + "<a href='" + link + "'>" + link + "</a>";
+            }
+            
             var smtp = new SmtpClient
             {
                 Host = "smtp.gmail.com",
@@ -219,21 +230,71 @@ namespace Tournamental.Controllers
             string message = "";
             bool status = false;
 
-            using (TournamentsEntities dc = new TournamentsEntities())
+            var account = db.User.Where(s => s.EmailID == EmailID).FirstOrDefault();
+            if (account != null)
             {
-                var account = dc.User.Where(s => s.EmailID == EmailID).FirstOrDefault();
-                if (account != null)
-                {
-                    // Send email
-                }
-                else
-                {
-                    message = "Account not found";
-                }
+                string resetCode = Guid.NewGuid().ToString();
+                SendEmailVerificationLink(account.EmailID, resetCode, "ResetPassword");
+                
+                account.ResetPasswordCode = resetCode;
+
+                db.Configuration.ValidateOnSaveEnabled = false;
+                db.SaveChanges();
+                message = "Reset pasword link has been sent.";
             }
+            else
+            {
+                message = "Account not found";
+            }
+            
             ViewBag.Message = message;
             ViewBag.Status = status;
             return View();
+        }
+
+
+
+        public ActionResult ResetPassword(string id)
+        {
+            User user = db.User.Where(s => s.ResetPasswordCode == id).FirstOrDefault();
+            if (user != null)
+            {
+                ResetPasswordModel model = new ResetPasswordModel();
+                model.ResetCode = id;
+                return View(model);
+            }
+            else
+            {
+                return HttpNotFound();
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ResetPassword(ResetPasswordModel model)
+        {
+            var message = "";
+            if (ModelState.IsValid)
+            {
+                User user = db.User.Where(s => s.ResetPasswordCode == model.ResetCode).FirstOrDefault();
+                if (user != null)
+                {
+                    user.Password = Cryptography.Hash(model.NewPassword);
+                    user.ResetPasswordCode = "";
+
+                    db.Configuration.ValidateOnSaveEnabled = false;
+                    db.SaveChanges();
+                    message = "Password updated.";
+                }
+            }
+            else
+            {
+                message = "Invalid model";
+            }
+
+
+            ViewBag.Message = message;
+            return View(model);
         }
     }
 

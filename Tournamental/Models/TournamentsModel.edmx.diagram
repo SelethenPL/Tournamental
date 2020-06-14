@@ -4,8 +4,12 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="253edb67abe5437a93d2e5b11befc9f3" Name="Diagram1">
+      <Diagram DiagramId="253edb67abe5437a93d2e5b11befc9f3" Name="Diagram1" ZoomLevel="74">
         <EntityTypeShape EntityType="TournamentsModel.User" Width="1.875" PointX="0.5" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="TournamentsModel.Participant" Width="1.5" PointX="5.5" PointY="0.875" />
+        <EntityTypeShape EntityType="TournamentsModel.Tournament" Width="1.5" PointX="2.625" PointY="2" />
+        <AssociationConnector Association="TournamentsModel.FK__Participa__Tourn__4BAC3F29" />
+        <AssociationConnector Association="TournamentsModel.FK__Participan__User__4CA06362" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -1,0 +1,90 @@
+﻿@model Tournamental.Models.Tournament
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Tournament</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Discipline)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Discipline)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Organizer)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Organizer)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Time)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Time)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Location)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Location)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MaxParticipant)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MaxParticipant)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ApplicationDeadline)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ApplicationDeadline)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SponsorLogo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SponsorLogo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RankedPlayers)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RankedPlayers)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

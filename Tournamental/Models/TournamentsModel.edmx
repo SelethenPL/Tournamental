@@ -5,6 +5,29 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="TournamentsModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Participant">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Tournament" Type="int" Nullable="false" />
+          <Property Name="User" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tournament">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="256" Nullable="false" />
+          <Property Name="Discipline" Type="varchar" MaxLength="256" Nullable="false" />
+          <Property Name="Organizer" Type="int" Nullable="false" />
+          <Property Name="Time" Type="datetime" Nullable="false" />
+          <Property Name="Location" Type="varchar" MaxLength="256" />
+          <Property Name="MaxParticipant" Type="int" Nullable="false" />
+          <Property Name="ApplicationDeadline" Type="datetime" Nullable="false" />
+          <Property Name="SponsorLogo" Type="varchar" MaxLength="256" Nullable="false" />
+          <Property Name="RankedPlayers" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="UserID" />
@@ -20,8 +43,42 @@
           <Property Name="VerificationSendTime" Type="datetime" Nullable="false" />
           <Property Name="ResetPasswordCode" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <Association Name="FK__Participa__Tourn__4BAC3F29">
+          <End Role="Tournament" Type="Self.Tournament" Multiplicity="1" />
+          <End Role="Participant" Type="Self.Participant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tournament">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Participant">
+              <PropertyRef Name="Tournament" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Participan__User__4CA06362">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Participant" Type="Self.Participant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Participant">
+              <PropertyRef Name="User" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="TournamentsModelStoreContainer">
+          <EntitySet Name="Participant" EntityType="Self.Participant" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tournament" EntityType="Self.Tournament" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Participa__Tourn__4BAC3F29" Association="Self.FK__Participa__Tourn__4BAC3F29">
+            <End Role="Tournament" EntitySet="Tournament" />
+            <End Role="Participant" EntitySet="Participant" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Participan__User__4CA06362" Association="Self.FK__Participan__User__4CA06362">
+            <End Role="User" EntitySet="User" />
+            <End Role="Participant" EntitySet="Participant" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -41,10 +98,71 @@
           <Property Name="ActivationCode" Type="Guid" Nullable="false" />
           <Property Name="VerificationSendTime" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ResetPasswordCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Participant" Relationship="TournamentsModel.FK__Participan__User__4CA06362" FromRole="User" ToRole="Participant" />
         </EntityType>
         <EntityContainer Name="TournamentsEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="User" EntityType="Self.User" />
+          <EntitySet Name="Participant" EntityType="TournamentsModel.Participant" />
+          <EntitySet Name="Tournament" EntityType="TournamentsModel.Tournament" />
+          <AssociationSet Name="FK__Participa__Tourn__4BAC3F29" Association="TournamentsModel.FK__Participa__Tourn__4BAC3F29">
+            <End Role="Tournament" EntitySet="Tournament" />
+            <End Role="Participant" EntitySet="Participant" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Participan__User__4CA06362" Association="TournamentsModel.FK__Participan__User__4CA06362">
+            <End Role="User" EntitySet="User" />
+            <End Role="Participant" EntitySet="Participant" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Participant">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Tournament" Type="Int32" Nullable="false" />
+          <Property Name="User" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Tournament1" Relationship="TournamentsModel.FK__Participa__Tourn__4BAC3F29" FromRole="Participant" ToRole="Tournament" />
+          <NavigationProperty Name="User1" Relationship="TournamentsModel.FK__Participan__User__4CA06362" FromRole="Participant" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Tournament">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="256" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Discipline" Type="String" MaxLength="256" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Organizer" Type="Int32" Nullable="false" />
+          <Property Name="Time" Type="DateTime" Precision="3" Nullable="false" />
+          <Property Name="Location" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+          <Property Name="MaxParticipant" Type="Int32" Nullable="false" />
+          <Property Name="ApplicationDeadline" Type="DateTime" Precision="3" Nullable="false" />
+          <Property Name="SponsorLogo" Type="String" MaxLength="256" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="RankedPlayers" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Participant" Relationship="TournamentsModel.FK__Participa__Tourn__4BAC3F29" FromRole="Tournament" ToRole="Participant" />
+        </EntityType>
+        <Association Name="FK__Participa__Tourn__4BAC3F29">
+          <End Type="TournamentsModel.Tournament" Role="Tournament" Multiplicity="1" />
+          <End Type="TournamentsModel.Participant" Role="Participant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tournament">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Participant">
+              <PropertyRef Name="Tournament" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Participan__User__4CA06362">
+          <End Type="TournamentsModel.User" Role="User" Multiplicity="1" />
+          <End Type="TournamentsModel.Participant" Role="Participant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Participant">
+              <PropertyRef Name="User" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -64,6 +182,31 @@
                 <ScalarProperty Name="IsEmailVerified" ColumnName="IsEmailVerified" />
                 <ScalarProperty Name="ActivationCode" ColumnName="ActivationCode" />
                 <ScalarProperty Name="VerificationSendTime" ColumnName="VerificationSendTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Participant">
+            <EntityTypeMapping TypeName="TournamentsModel.Participant">
+              <MappingFragment StoreEntitySet="Participant">
+                <ScalarProperty Name="User" ColumnName="User" />
+                <ScalarProperty Name="Tournament" ColumnName="Tournament" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tournament">
+            <EntityTypeMapping TypeName="TournamentsModel.Tournament">
+              <MappingFragment StoreEntitySet="Tournament">
+                <ScalarProperty Name="RankedPlayers" ColumnName="RankedPlayers" />
+                <ScalarProperty Name="SponsorLogo" ColumnName="SponsorLogo" />
+                <ScalarProperty Name="ApplicationDeadline" ColumnName="ApplicationDeadline" />
+                <ScalarProperty Name="MaxParticipant" ColumnName="MaxParticipant" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="Time" ColumnName="Time" />
+                <ScalarProperty Name="Organizer" ColumnName="Organizer" />
+                <ScalarProperty Name="Discipline" ColumnName="Discipline" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

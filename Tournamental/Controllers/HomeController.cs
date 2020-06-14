@@ -14,6 +14,7 @@ namespace Tournamental.Controllers
             return View();
         }
 
+        [Authorize]
         [HttpGet]
         public ActionResult Contact()
         {
