@@ -22,7 +22,7 @@ namespace Tournamental.Controllers
         }
 
 
-        // [Authorize]
+        [Authorize]
         public ActionResult Create(int tournamentID)
         {
             ViewBag.ID = tournamentID;

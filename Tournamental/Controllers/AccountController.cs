@@ -12,7 +12,7 @@ using Tournamental.Models;
 
 namespace Tournamental.Controllers
 {
-    public class UserController : Controller
+    public class AccountController : Controller
     {
         private TournamentsEntities db = new TournamentsEntities();
 

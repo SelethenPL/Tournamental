@@ -185,7 +185,6 @@ namespace Tournamental.Controllers
             return View(tournament);
         }
 
-
         public ActionResult Ladder(int id)
         {
             var participant = db.Participant.Where(p => p.Tournament == id);
