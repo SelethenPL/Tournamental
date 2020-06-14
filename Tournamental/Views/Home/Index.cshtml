@@ -10,14 +10,14 @@
 
     @if (Request.IsAuthenticated)
     {
-        using(Html.BeginForm("Logout", "User", FormMethod.Post, new { id = "logoutForm" }))
+        using(Html.BeginForm("Logout", "Account", FormMethod.Post, new { id = "logoutForm" }))
         {
             <button class="btn btn-primary btn-lg" href="javascript:document.getElementById('logoutForm').submit()">Logout</button>
         }
     }
     else
     {
-        @Html.ActionLink("Login", "Login", "User", null, new { @class = "btn btn-primary btn-lg" })
+        @Html.ActionLink("Login", "Login", "Account", null, new { @class = "btn btn-primary btn-lg" })
     }
 
 </div>
