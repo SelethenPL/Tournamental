@@ -8,6 +8,7 @@ using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.Ajax.Utilities;
+using PagedList;
 using Tournamental.Models;
 
 namespace Tournamental.Controllers
@@ -16,9 +17,32 @@ namespace Tournamental.Controllers
     {
         private TournamentsEntities db = new TournamentsEntities();
 
-        public ActionResult Index()
+        public ActionResult Index(string currentFilter, string searchString, int? page)
         {
-            return View(db.Tournament.ToList());
+            var tournaments = db.Tournament.ToList();
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            };
+            ViewBag.CurrentFilter = searchString;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                tournaments = tournaments.Where(s => s.Name.Contains(searchString)).ToList();
+            }
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+
+            if (TempData["shortMessage"] != null)
+            {
+                ViewBag.Message = TempData["shortMessage"];
+                TempData.Remove("shortMessage");
+            }
+            return View(tournaments.ToPagedList(pageNumber, pageSize));
         }
 
         public ActionResult Details(int? id)
@@ -101,10 +125,22 @@ namespace Tournamental.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Tournament tournament = db.Tournament.Find(id);
+
             if (tournament == null)
             {
                 return HttpNotFound();
             }
+
+            #region check if user can edit
+            var user = db.User.Where(s => s.UserID == tournament.Organizer).FirstOrDefault();
+            
+            if (user == null || !user.EmailID.Equals(User.Identity.Name))
+            {
+                TempData["shortMessage"] = "You need to be organizer to edit the tournament!";
+                return RedirectToAction("Index");
+            }
+            #endregion
+
             return View(tournament);
         }
 

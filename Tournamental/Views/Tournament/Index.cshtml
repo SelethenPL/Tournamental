@@ -1,4 +1,6 @@
-﻿@model IEnumerable<Tournamental.Models.Tournament>
+﻿@model PagedList.IPagedList<Tournamental.Models.Tournament>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 @{
     ViewBag.Title = "All tournaments list";
@@ -6,34 +8,31 @@
 
 <h2>Index</h2>
 
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-warning">
+        <strong>Error!</strong>
+        @ViewBag.Message
+    </div>
+}
+
 <p>
     @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-primary btn-lg" })
 </p>
+@using (Html.BeginForm())
+{
+    <p>
+        Find by name: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" />
+    </p>
+}
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Name)
+            Tournament name
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Discipline)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Time)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Location)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.MaxParticipant)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ApplicationDeadline)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.SponsorLogo)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.RankedPlayers)
+            Discipline
         </th>
         <th></th>
     </tr>
@@ -48,29 +47,16 @@
                 @Html.DisplayFor(modelItem => item.Discipline)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Time)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Location)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MaxParticipant)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ApplicationDeadline)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SponsorLogo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RankedPlayers)
-            </td>
-            <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                @Html.ActionLink("Details", "Details", new { id = item.Id })
             </td>
         </tr>
     }
 
 </table>
+
+<hr />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))

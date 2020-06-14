@@ -12,6 +12,8 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Tournament" Type="int" Nullable="false" />
           <Property Name="User" Type="int" Nullable="false" />
+          <Property Name="LicenceNumber" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CurrentRanking" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Tournament">
           <Key>
@@ -122,6 +124,8 @@
           <Property Name="User" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Tournament1" Relationship="TournamentsModel.FK__Participa__Tourn__4BAC3F29" FromRole="Participant" ToRole="Tournament" />
           <NavigationProperty Name="User1" Relationship="TournamentsModel.FK__Participan__User__4CA06362" FromRole="Participant" ToRole="User" />
+          <Property Name="LicenceNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CurrentRanking" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Tournament">
           <Key>
@@ -188,6 +192,8 @@
           <EntitySetMapping Name="Participant">
             <EntityTypeMapping TypeName="TournamentsModel.Participant">
               <MappingFragment StoreEntitySet="Participant">
+                <ScalarProperty Name="CurrentRanking" ColumnName="CurrentRanking" />
+                <ScalarProperty Name="LicenceNumber" ColumnName="LicenceNumber" />
                 <ScalarProperty Name="User" ColumnName="User" />
                 <ScalarProperty Name="Tournament" ColumnName="Tournament" />
                 <ScalarProperty Name="Id" ColumnName="Id" />

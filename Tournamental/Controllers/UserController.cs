@@ -116,31 +116,38 @@ namespace Tournamental.Controllers
             var v = db.User.Where(s => s.EmailID == login.EmailID).FirstOrDefault();
             if (v != null)
             {
-                if (string.Compare(Cryptography.Hash(login.Password), v.Password) == 0)
+                if (v.IsEmailVerified == true)
                 {
-                    int timeout = login.RememberMe ? 420 : 20;
-                    var ticket = new FormsAuthenticationTicket(login.EmailID, login.RememberMe, timeout);
-                    string encrypt = FormsAuthentication.Encrypt(ticket);
-                    var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, encrypt)
+                    if (string.Compare(Cryptography.Hash(login.Password), v.Password) == 0)
                     {
-                        Expires = DateTime.Now.AddMinutes(timeout),
-                        HttpOnly = true
-                    };
+                        int timeout = login.RememberMe ? 420 : 20;
+                        var ticket = new FormsAuthenticationTicket(login.EmailID, login.RememberMe, timeout);
+                        string encrypt = FormsAuthentication.Encrypt(ticket);
+                        var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, encrypt)
+                        {
+                            Expires = DateTime.Now.AddMinutes(timeout),
+                            HttpOnly = true
+                        };
 
-                    Response.Cookies.Add(cookie);
+                        Response.Cookies.Add(cookie);
 
-                    if (Url.IsLocalUrl(returnUrl))
-                    {
-                        return Redirect(returnUrl);
+                        if (Url.IsLocalUrl(returnUrl))
+                        {
+                            return Redirect(returnUrl);
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Home");
+                        message = "Invalid credential";
                     }
-                } 
+                }
                 else
                 {
-                    message = "Invalid credential";
+                    message = "Email is not verified!";
                 }
             }
             else

@@ -17,6 +17,8 @@ namespace Tournamental.Models
         public int Id { get; set; }
         public int Tournament { get; set; }
         public int User { get; set; }
+        public string LicenceNumber { get; set; }
+        public int CurrentRanking { get; set; }
     
         public virtual Tournament Tournament1 { get; set; }
         public virtual User User1 { get; set; }

@@ -27,11 +27,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Organizer)
+            @Html.DisplayNameFor(model => model.ApplicationDeadline)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Organizer)
+            @Html.DisplayFor(model => model.ApplicationDeadline)
         </dd>
 
         <dt>
@@ -51,6 +51,13 @@
         </dd>
 
         <dt>
+            @Html.DisplayNameFor(model => model.RankedPlayers)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RankedPlayers)
+        </dd>
+        <dt>
             @Html.DisplayNameFor(model => model.MaxParticipant)
         </dt>
 
@@ -59,28 +66,13 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.ApplicationDeadline)
+            Sponsor logo
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.ApplicationDeadline)
+            <img src=@Html.DisplayFor(model => model.SponsorLogo) width="400" height="400" alt="" />
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.SponsorLogo)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.SponsorLogo)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.RankedPlayers)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.RankedPlayers)
-        </dd>
 
     </dl>
 </div>

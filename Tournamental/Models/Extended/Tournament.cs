@@ -37,8 +37,8 @@ namespace Tournamental.Models
         public int Organizer { get; set; }
 
         [Display(Name = "Start Time")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Start time can't be left empty")]
-        [DataType(DataType.Date)]
+        [DataType(DataType.Date), Required]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Time { get; set; }
 
         [Display(Name = "Location")]
@@ -50,8 +50,8 @@ namespace Tournamental.Models
         public int MaxParticipant { get; set; }
         
         [Display(Name = "Application deadline")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Deadline can't be empty")]
-        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date), Required]
         public DateTime ApplicationDeadline { get; set; }
 
         [Display(Name = "Link to sponsor logo")]
